@@ -4,7 +4,8 @@
 
 <details>
 <summary>Прописываем в Vagrantfile</summary>
-<code>
+
+```
 	:disks => {
 		:sata1 => {
 			:dfile => './sata1.vdi',
@@ -38,7 +39,8 @@
                 }
 
 	}
-</code>
+
+```
 </details>
 
 Устанавливаем необходимие утилиты
