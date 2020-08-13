@@ -1,3 +1,60 @@
+## Делаем RAID 10
+
+Подключили в Vagrantfile 6 дисков
+
+<details>
+<summary>Прописываем в Vagrantfile</summary>
+	:disks => {
+		:sata1 => {
+			:dfile => './sata1.vdi',
+			:size => 250, # Megabytes
+			:port => 1
+		},
+		:sata2 => {
+                       :dfile => './sata2.vdi',
+                       :size => 250, # Megabytes
+			:port => 2
+		},
+                :sata3 => {
+                       :dfile => './sata3.vdi',
+                       :size => 250, # Megabytes
+                       :port => 3
+                },
+                :sata4 => {
+                       :dfile => './sata4.vdi',
+                       :size => 250, # Megabytes
+                       :port => 4
+                },
+                :sata5 => {
+                       :dfile => './sata5.vdi',
+                       :size => 250, # Megabytes
+                       :port => 5
+                },
+                :sata6 => {
+                       :dfile => './sata6.vdi',
+                       :size => 250, # Megabytes
+                       :port => 6
+                }
+
+	}
+</details>
+
+Устанавливаем необходимие утилиты
+```
+yum install -y mdadm smartmontools hdparm gdisk
+```
+Создаём RAID командой
+```
+mdadm --create --verbose /dev/md0 -l 10 -n 6 /dev/sdb /dev/sdc /dev/sdd /dev/sde /dev/sdf /dev/sdg
+```
+Создаём конфигурационный файл для массива
+```
+mkdir /etc/mdadm
+touch /etc/mdadm/mdadm.conf
+echo "DEVICE partitions" > /etc/mdadm/mdadm.conf
+mdadm --detail --scan --verbose | awk '/ARRAY/ {print}' >> /etc/mdadm/mdadm.conf
+```
+
 ## Ломаем и чиним RAID
 
 Искусственно ломаем одно из блочных устройств командой (делаем под рутом)
