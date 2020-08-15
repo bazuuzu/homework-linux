@@ -48,7 +48,7 @@ realtime =none                   extsz=4096   blocks=0, rtextents=0
 mount /dev/vg_root/lv_root /mnt
 ```
 
-Этой командой скопируем все даннýе с / раздела в /mnt:
+Этой командой скопируем все данные с / раздела в /mnt:
 
 ```shell
 [root@lvm vagrant]# xfsdump -J - /dev/VolGroup00/LogVol00 | xfsrestore -J - /mnt
@@ -78,7 +78,7 @@ Found initrd image: /boot/initramfs-3.10.0-862.2.3.el7.x86_64.img
 done
 ```
 
-Обновим образ initrd
+Обновим образ initrd (загрузочный RAM диск)
 
 ```shell
 cd /boot ; for i in `ls initramfs-*img`; do dracut -v $i `echo $i|sed "s/initramfs-//g; s/.img//g"` --force; done
@@ -110,8 +110,7 @@ sdd                       8:48   0    1G  0 disk
 sde                       8:64   0    1G  0 disk 
 ```
 
-Теперь нам нужно изменить размер старой VG и вернуть на него рут. Для этого удалāем
-старый LV размеров в 40G и создаем новый на 8G:
+Теперь нам нужно изменить размер старой VG и вернуть на него рут. Для этого удаляем старый LV размеров в 40G и создаем новый на 8G:
 ```shell
 [root@lvm vagrant]# lvremove /dev/VolGroup00/LogVol00
 Do you really want to remove active logical volume VolGroup00/LogVol00? [y/n]: y
