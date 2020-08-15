@@ -84,10 +84,8 @@ done
 cd /boot ; for i in `ls initramfs-*img`; do dracut -v $i `echo $i|sed "s/initramfs-//g; s/.img//g"` --force; done
 ```
 
-Для того, чтобы при загрузке был смонтирован нужный root нужно в файле
-```shell
-/boot/grub2/grub.cfg заменить rd.lvm.lv=VolGroup00/LogVol00 на rd.lvm.lv=vg_root/lv_root
-```
+Для того, чтобы при загрузке был смонтирован нужный root нужно в файле /boot/grub2/grub.cfg заменить 
+rd.lvm.lv=VolGroup00/LogVol00 на rd.lvm.lv=vg_root/lv_root
 ```shell
 nano /boot/grub2/grub.cfg
 ```
