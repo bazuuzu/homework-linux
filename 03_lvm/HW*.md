@@ -370,3 +370,6 @@ total 0
 -rw-r--r--. 1 root root 0 Aug 15 19:40 file8
 -rw-r--r--. 1 root root 0 Aug 15 19:40 file9
 ```
+
+**Доп. материал**
+https://habr.com/ru/company/veeam/blog/458250/
