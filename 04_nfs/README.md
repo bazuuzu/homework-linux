@@ -60,6 +60,7 @@ systemctl start rpcbind nfs-server
 
 <details>
 <summary>Скрипт для клиента</summary>
+
 ```
 #!/bin/bash
 
@@ -76,3 +77,4 @@ echo "192.168.50.10:/mnt/upload /mnt/upload nfs udp,nfsvers=3 0 0" >> /etc/fstab
 mount -a
 ```
 </details>
+
