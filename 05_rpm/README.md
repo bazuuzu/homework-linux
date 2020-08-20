@@ -676,7 +676,7 @@ fi
 Обратите внимание что путь до openssl указываем ДО каталога:
 
 ```
---with-openssl=/root/openssl-1.1.1a
+--with-openssl=/root/openssl-1.1.1g
 ```
 
 Теперь можно приступить к сборке RPM пакета:
