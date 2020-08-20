@@ -673,6 +673,12 @@ fi
 </details>
 <p>
 
+Обратите внимание что путь до openssl указываем ДО каталога:
+
+```
+--with-openssl=/root/openssl-1.1.1a
+```
+
 Теперь можно приступить к сборке RPM пакета:
 
 rpmbuild -bb rpmbuild/SPECS/nginx.spec
