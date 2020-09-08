@@ -37,7 +37,4 @@ PID     PPID    State   NICE    Priority        tcomm
 
 "\011" - Табуляция для красивого вида
 
-Чтобы запустить скрипт достаточно клонировать репозиторий и запустить ./ps.sh
-```
-git clone https://github.com/bazuuzu/homework-linux/tree/master/09_processes
-```
+Чтобы запустить скрипт достаточно клонировать репозиторий и запустить ./ps.sh из папки homework-linux/09_processes, предварительно дав скрипту chmod +x
