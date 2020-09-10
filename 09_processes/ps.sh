@@ -8,7 +8,7 @@ echo "PID       PPID    State   NICE    Priority        tcomm"
 for i in $psshow
     do
         awk -F " " '{print $1,"\011",$4,"\011",$3,"\011",$19,"\011",$18,"\011",$2}' /proc/$i/stat
-    done
+    done 2> /dev/null
 
 echo "-------------------------------------"
 echo "Всего процессов:"
