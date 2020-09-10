@@ -11,4 +11,4 @@ for i in $psshow
     done
 
 echo "Всего процессов:"
-ls /proc | grep -Eo '[0-9]{1,5}' | sort -n | wc -l
+echo ${psshow} | wc -w
