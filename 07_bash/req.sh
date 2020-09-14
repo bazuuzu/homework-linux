@@ -19,16 +19,16 @@ parsing()
 {
         #X IP адресов (с наибольшим кол-вом запросов) с указанием кол-ва запросов
         echo "IP адресов с наибольшим кол-вом запросов:" >> send.txt
-        tail -n+$old_str access.log | awk -F "-" '{print $1}' | sort -nr | uniq -c | sort -nr >> send.t$
-        #Y запрашиваемых адресов (с наибольшим кол-вом запросов) с указанием кол-ва запросов c момента $
+        tail -n+$old_str access.log | awk -F "-" '{print $1}' | sort -nr | uniq -c | sort -nr >> send.txt
+        #Y запрашиваемых адресов (с наибольшим кол-вом запросов) с указанием кол-ва запросов c момента последнего запуска
         echo "Наиболее запрашиваемые адреса:" >> send.txt
-        tail -n+$old_str access.log | awk -F " " '{print $7}' | sort -nr | uniq -c | sort -nr >> send.t$
+        tail -n+$old_str access.log | awk -F " " '{print $7}' | sort -nr | uniq -c | sort -nr >> send.txt
         #все ошибки c момента последнего запуска
         echo "Все ошибки:" >> send.txt
-        tail -n+$old_str access.log | awk -F '"' '{print $3}' | awk -F " " '{print $1}' | grep -P '4..|$
+        tail -n+$old_str access.log | awk -F '"' '{print $3}' | awk -F " " '{print $1}' | grep -P '4..|5..' | sort | uniq -c | sort -nr >> send.txt
         #список всех кодов возврата с указанием их кол-ва с момента последнего запуска
         echo "Все коды возврата:" >> send.txt
-        tail -n+$old_str access.log | awk -F '"' '{print $3}' | awk -F " " '{print $1}' | sort | uniq -$
+        tail -n+$old_str access.log | awk -F '"' '{print $3}' | awk -F " " '{print $1}' | sort | uniq -c | sort -nr >> send.txt
 }
 
 #Функция изменения строки
