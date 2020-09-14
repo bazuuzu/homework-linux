@@ -2,6 +2,7 @@
 
 #ENV
 old_str=`cat env.txt`
+curr_str=`wc -l access.log | awk -F " " '{print $1}'`
 lockfile=/tmp/localfile
 
 #Функция подсчёта временного промежутка
@@ -38,6 +39,19 @@ old_str=`wc -l access.log | awk -F " " '{print $1}'`
 echo ${old_str} > env.txt
 }
 
+#Функция, отслеживающая стирание access.log
+log_erased()
+{
+    if (($old_str > $curr_str));
+    then
+        old_str=0
+        echo ${old_str} > env.txt
+    else
+        sleep 10s
+    fi
+}
+
+#Защита от повторного запуска
 trap_file()
 {
         if ( set -o noclobber; echo `ps -a | grep req.sh` > "$lockfile") 2> /dev/null;
@@ -45,6 +59,7 @@ trap_file()
                 trap 'rm -f "$lockfile"; exit $?' INT TERM EXIT
                 while true
                         do
+                        log_erased
                         timeinterval
                         parsing
                         str_chn

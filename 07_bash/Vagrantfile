@@ -5,8 +5,8 @@ ENV["LC_ALL"] = "en_US.UTF-8"
 
 MACHINES = {
   :q => {
-        :box_name => "centos/8",
-        :box_version => "1905.1",
+        :box_name => "centos/7",
+        :box_version => "1804.02",
         :ip_addr => '192.168.111.101',
     :disks => {
         :sata1 => {
@@ -20,7 +20,7 @@ MACHINES = {
 
 Vagrant.configure("2") do |config|
 
-    config.vm.box_version = "1905.1"
+    config.vm.box_version = "1804.02"
     MACHINES.each do |boxname, boxconfig|
   
         config.vm.define boxname do |box|
@@ -54,8 +54,13 @@ Vagrant.configure("2") do |config|
             mkdir -p ~root/.ssh
             cp ~vagrant/.ssh/auth* ~root/.ssh
             yum install epel-release nano git -y
+            yum install -y mailx
+            git clone https://github.com/bazuuzu/homework-linux
+            chmod +x /home/vagrant/homework-linux/07_bash/req.sh
+            echo "00 * * * * root /home/vagrant/homework-linux/07_bash/req.sh" > /etc/cron.d/0hourly
           SHELL
   
         end
     end
   end
+  
