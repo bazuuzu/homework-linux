@@ -1,0 +1,6 @@
+nginx:
+  hosts:
+    host1:
+      ansible_host: 127.0.0.1
+      ansible_port: 2222
+      ansible_ssh_private_key_file: /home/novoselov/homework-linux/11_ansible/.vagrant/machines/nginx/virtualbox/private_key
