@@ -1,6 +1,7 @@
 Для проверки сделать Vagrant up
 Перейти на http://192.168.11.150:8080/ или сделать curl http://192.168.11.150:8080
 
+## Как выполнялось:
 
 ```
 novoselov@ubunzuzu:~/homework-linux/11_ansible$ vagrant ssh-config
