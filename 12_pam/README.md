@@ -126,3 +126,9 @@ if [[ `date +%u` > 5 ]]
 ```
 
 На нужный день и попробовать залогиниться по ssh под пользователями test_user и test_admin и посмотреть что получится
+
+```
+[root@pam vagrant]# ssh test_user@localhost
+test_user@localhost's password: 
+Permission denied, please try again.
+```
