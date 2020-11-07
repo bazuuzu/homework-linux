@@ -59,3 +59,9 @@
 
     - name: reboot
       reboot:
+
+    - name: Install nano & start journald_upload
+      yum:
+        name: nano
+        state: present
+      notify: journald_upload start
