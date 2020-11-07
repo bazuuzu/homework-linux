@@ -1,0 +1,8 @@
+---
+# vars file for journald_cli
+
+aud_port: 60
+server: 192.168.11.151
+jrnl_p: 19532
+journald_owner: systemd-journal-remote
+journald_group: systemd-journal-remote

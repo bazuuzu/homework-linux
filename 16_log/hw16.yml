@@ -1,0 +1,13 @@
+---
+- name: Install and configure NGINX and journald_cli
+  hosts: nginx
+  become: True
+  roles:
+    - nginx_role
+    - journald_cli
+
+- name: Install and confidure journald
+  hosts: log
+  become: True
+  roles:
+    - journald_srv
