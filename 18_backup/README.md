@@ -37,7 +37,7 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDR0E485c7XsdOSrYriJRkgTg/1L7HxEJw6x5Nq1fTd
 [root@client vagrant]# chown -R borg:borg ~borg/.ssh
 ```
 
-Будем шифровать с помощью blake2. Пароль: 1234
+Будем шифровать с помощью blake2. Пароль: 1234 <br>
 На клиенте делаем
 
 ```
@@ -75,8 +75,9 @@ key = hqlhbGdvcml0aG2mc2hhMjU2pGRhdGHaAZ4A1pB+Lj+3giUzCC5V+3P5boKowlqu9NV0cL
         +DrJV90DrT6LBg2ndmVyc2lvbgE=
 ```
 
-Как программно указать кодовую фразу для шифрования? (https://borgbackup.readthedocs.io/en/stable/faq.html?highlight=BORG_PASSPHRASE#how-can-i-specify-the-encryption-passphrase-programmatically)
-Есть несколько способов указать кодовую фразу без вмешательства человека. Я выбрал BORG_PASSPHRASE. Парольную фразу можно указать с помощью переменной enviroment. Часто это самый простой вариант, но он может быть небезопасным, если сценарий, который его устанавливает, доступен для чтения всем.BORG_PASSPHRASE
+Как программно указать кодовую фразу для шифрования? (https://borgbackup.readthedocs.io/en/stable/faq.html?highlight=BORG_PASSPHRASE#how-can-i-specify-the-encryption-passphrase-programmatically) <br>
+Есть несколько способов указать кодовую фразу без вмешательства человека. Я выбрал BORG_PASSPHRASE. Парольную фразу можно указать с помощью переменной enviroment. Часто это самый простой вариант, но он может быть небезопасным, если сценарий, который его устанавливает, доступен для чтения всем. <br>
+BORG_PASSPHRASE
 ```
 export BORG_PASSPHRASE='1234'.
 ```
