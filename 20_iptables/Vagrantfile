@@ -1,0 +1,112 @@
+MACHINES = {
+:inetRouter => {
+        :box_name => "centos/7",
+        #:public => {:ip => '10.10.10.1', :adapter => 1},
+        :net => [
+                   {ip: '192.168.255.1', adapter: 2, netmask: "255.255.255.0", virtualbox__intnet: "router-net"},
+                ]
+  },
+  
+  :inetRouter2 => {
+    :box_name => "centos/7",
+    :net => [
+               {ip: '192.168.254.1', adapter: 2, netmask: "255.255.255.0", virtualbox__intnet: "router2-net"},
+               {ip: '192.168.2.1', adapter: 3, netmask: "255.255.255.0"},
+            ]
+  },
+
+  :centralRouter => {
+        :box_name => "centos/7",
+        :net => [
+                   {ip: '192.168.255.2', adapter: 2, netmask: "255.255.255.0", virtualbox__intnet: "router-net"},
+                   {ip: '192.168.254.2', adapter: 3, netmask: "255.255.255.0", virtualbox__intnet: "router2-net"},
+                   {ip: '192.168.0.1', adapter: 4, netmask: "255.255.255.0", virtualbox__intnet: "hw-net"},
+                ]
+  },
+  
+  :centralServer => {
+        :box_name => "centos/7",
+        :net => [
+                   {ip: '192.168.0.2', adapter: 2, netmask: "255.255.255.0", virtualbox__intnet: "hw-net"}
+                ]
+  }
+}
+
+Vagrant.configure("2") do |config|
+
+  MACHINES.each do |boxname, boxconfig|
+
+    config.vm.define boxname do |box|
+
+        box.vm.box = boxconfig[:box_name]
+        box.vm.host_name = boxname.to_s
+
+        boxconfig[:net].each do |ipconf|
+          box.vm.network "private_network", ipconf
+        end
+
+        box.vm.provision "shell", inline: <<-SHELL
+          mkdir -p ~root/.ssh
+                cp ~vagrant/.ssh/auth* ~root/.ssh
+        SHELL
+        
+        case boxname.to_s
+        when "inetRouter"
+          box.vm.provision "shell", run: "always", inline: <<-SHELL
+            sudo bash -c 'echo "net.ipv4.conf.all.forwarding=1" >> /etc/sysctl.conf'; sudo sysctl -p
+            sudo yum install -y iptables-services
+            sudo systemctl enable iptables && sudo systemctl start iptables
+            sudo iptables -F; sudo iptables -t nat -A POSTROUTING ! -d 192.168.0.0/16 -o eth0 -j MASQUERADE; sudo service iptables save
+            sudo bash -c 'echo "192.168.0.0/16 via 192.168.255.2 dev eth1" > /etc/sysconfig/network-scripts/route-eth1'; sudo systemctl restart network
+            sudo bash -c 'echo "192.168.254.0/24 via 192.168.255.2 dev eth1" > /etc/sysconfig/network-scripts/route-eth1'; sudo systemctl restart network
+            sed -i 's/^PasswordAuthentication.*$/PasswordAuthentication yes/' /etc/ssh/sshd_config
+            systemctl restart sshd.service
+            systemctl enable --now iptables
+            cp -f /vagrant/iptables.rules /home/vagrant
+            iptables-restore < /home/vagrant/iptables.rules
+            service iptables save
+            sudo reboot
+            SHELL
+          when "inetRouter2"
+            box.vm.provision "shell", run: "always", inline: <<-SHELL
+              sudo bash -c 'echo "net.ipv4.conf.all.forwarding=1" >> /etc/sysctl.conf'; sudo sysctl -p
+              echo "DEFROUTE=no" >> /etc/sysconfig/network-scripts/ifcfg-eth0 
+              echo "GATEWAY=192.168.254.2" >> /etc/sysconfig/network-scripts/ifcfg-eth1
+              sudo bash -c 'echo "192.168.0.0/24 via 192.168.254.2 dev eth1" > /etc/sysconfig/network-scripts/route-eth1'
+              sudo bash -c 'echo "192.168.255.0/24 via 192.168.254.2 dev eth1" > /etc/sysconfig/network-scripts/route-eth1'
+              sudo systemctl restart network
+              yum install -y iptables-services
+              systemctl enable --now iptables
+              iptables -t nat -A PREROUTING -i eth2 -p tcp -m tcp --dport 8080 -j DNAT --to-destination 192.168.0.2:80
+              iptables -t nat -A POSTROUTING -d 192.168.0.2/32 -p tcp -m tcp --dport 80 -j SNAT --to-source 192.168.2.1
+              service iptables save
+              sudo reboot
+              SHELL
+          when "centralRouter"
+          box.vm.provision "shell", run: "always", inline: <<-SHELL
+            sudo bash -c 'echo "net.ipv4.conf.all.forwarding=1" >> /etc/sysctl.conf'; sudo sysctl -p
+            echo "DEFROUTE=no" >> /etc/sysconfig/network-scripts/ifcfg-eth0 
+            sudo bash -c 'echo "192.168.2.0/24 via 192.168.254.1 dev eth1" > /etc/sysconfig/network-scripts/route-eth1'
+            echo "GATEWAY=192.168.255.1" >> /etc/sysconfig/network-scripts/ifcfg-eth1
+            sudo systemctl restart network
+            sleep 10
+            yum install -y nmap
+            cp -f /vagrant/knock.sh /home/vagrant
+            chmod +x /home/vagrant/knock.sh
+            sudo reboot
+            SHELL
+        when "centralServer"
+          box.vm.provision "shell", run: "always", inline: <<-SHELL
+            echo "DEFROUTE=no" >> /etc/sysconfig/network-scripts/ifcfg-eth0 
+            ip route del default
+            systemctl restart network
+            echo "GATEWAY=192.168.0.1" >> /etc/sysconfig/network-scripts/ifcfg-eth1
+            sudo systemctl restart network
+            yum install -y epel-release nano
+            yum install -y nginx
+            systemctl enable --now nginx
+            SHELL
+        end
+      end
+  end
+end
