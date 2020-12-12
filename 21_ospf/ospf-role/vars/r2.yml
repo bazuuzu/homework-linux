@@ -1,0 +1,7 @@
+lo: 10.10.2.1
+r: r2
+network_eth2: 10.10.10.0/24
+network_eth3: 10.10.20.0/24
+def_i_or: ''
+cost_eth2: 10
+cost_eth3: 1000

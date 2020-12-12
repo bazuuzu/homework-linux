@@ -1,0 +1,5 @@
+---
+- hosts: hw21
+  become: True
+  roles:
+    - ospf-role

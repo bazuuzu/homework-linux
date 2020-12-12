@@ -1,0 +1,7 @@
+lo: 10.10.1.1
+r: r1
+network_eth2: 10.10.10.0/24
+network_eth3: 10.10.30.0/24
+def_i_or: default-information originate
+cost_eth2: 1000
+cost_eth3: 10
