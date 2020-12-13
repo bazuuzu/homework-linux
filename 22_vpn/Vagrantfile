@@ -1,0 +1,60 @@
+# -*- mode: ruby -*-
+# vim: set ft=ruby :
+
+MACHINES = {
+ :server => {
+        :box_name => "centos/7"
+  }
+
+}
+
+Vagrant.configure("2") do |config|
+
+  MACHINES.each do |boxname, boxconfig|
+
+    config.vm.define boxname do |box|
+
+        box.vm.box = boxconfig[:box_name]
+        box.vm.host_name = boxname.to_s
+
+        config.vm.provider "virtualbox" do |v|
+          v.memory = 256
+        end
+
+        
+        if boxconfig.key?(:public)
+          box.vm.network "public_network", boxconfig[:public]
+        end
+
+        box.vm.provision "shell", inline: <<-SHELL
+                mkdir -p ~root/.ssh
+                cp ~vagrant/.ssh/auth* ~root/.ssh
+        SHELL
+
+
+        case boxname.to_s
+        when "server"
+        box.vm.network "forwarded_port", guest: 1194, host: 1194, host_ip: "127.0.0.1"
+          box.vm.provision "shell", run: "always", inline: <<-SHELL
+            yum install -y epel-release; sudo yum install -y easy-rsa tcpdump iperf3 wget nano openvpn iptables-services; sudo systemctl enable iptables && sudo systemctl start iptables;
+            setenforce 0
+            sed -i 's/=enforcing/=disabled/g' /etc/selinux/config
+            bash -c 'echo "net.ipv4.conf.all.forwarding=1" >> /etc/sysctl.conf'; sudo sysctl -p
+            iptables -P INPUT ACCEPT
+            iptables -P FORWARD ACCEPT
+            iptables -P OUTPUT ACCEPT
+            iptables -t nat -F
+            iptables -t mangle -F
+            iptables -F
+            iptables -X
+            service iptables save
+            SHELL
+        
+        end
+
+      end
+
+  end
+  
+  
+end
